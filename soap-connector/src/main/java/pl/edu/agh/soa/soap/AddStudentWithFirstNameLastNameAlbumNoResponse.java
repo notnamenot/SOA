@@ -8,12 +8,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for getStudentByAlbumNoResponse complex type.
+ * <p>Java class for addStudentWithFirstNameLastNameAlbumNoResponse complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="getStudentByAlbumNoResponse"&gt;
+ * &lt;complexType name="addStudentWithFirstNameLastNameAlbumNoResponse"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
@@ -27,10 +27,10 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "getStudentByAlbumNoResponse", propOrder = {
+@XmlType(name = "addStudentWithFirstNameLastNameAlbumNoResponse", propOrder = {
     "_return"
 })
-public class GetStudentByAlbumNoResponse {
+public class AddStudentWithFirstNameLastNameAlbumNoResponse {
 
     @XmlElement(name = "return")
     protected Student _return;

@@ -1,0 +1,4 @@
+pl\edu\agh\soa\soap\models\Student.class
+pl\edu\agh\soa\soap\StudentServiceImpl.class
+pl\edu\agh\soa\soap\models\Student$Builder.class
+pl\edu\agh\soa\soap\StudentService.class

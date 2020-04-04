@@ -49,19 +49,20 @@
         </dependency>
         <dependency>
             <groupId>pl.edu.agh.soa.soap</groupId>
-            <artifactId>lab1-ejb</artifactId>
+            <artifactId>soap-api</artifactId>
             <type>ejb</type>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+       <!-- <finalName>${project.artifactId}</finalName>-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
                 <version>${version.ear.plugin}</version>
                 <configuration>
+                    <finalName>ipachel-zad1</finalName>
                     <!-- Tell Maven we are using Java EE 7 -->
                     <version>7</version>
                     <!-- Use Java EE ear libraries as needed. Java EE ear libraries 
@@ -79,7 +80,8 @@
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <configuration>
-                    <filename>${project.artifactId}.ear</filename>
+                    <!--<filename>${project.artifactId}.ear</filename>-->
+                    <filename>ipachel-zad1.ear</filename>
                     <skip>false</skip>
                 </configuration>
             </plugin>

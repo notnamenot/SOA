@@ -33,7 +33,7 @@
         </license>
     </licenses>
     <modules>
-        <module>lab1-ejb</module>
+        <module>soap-api</module>
         <module>lab1-web</module>
         <module>lab1-ear</module>
         <module>soap-connector</module>
@@ -74,7 +74,7 @@
                 to repeat ourselves in every module -->
             <dependency>
                 <groupId>pl.edu.agh.soa.soap</groupId>
-                <artifactId>lab1-ejb</artifactId>
+                <artifactId>soap-api</artifactId>
                 <version>${project.version}</version>
                 <type>ejb</type>
             </dependency>

@@ -8,7 +8,7 @@
     </web>
   </module>
   <module>
-    <ejb>lab1-ejb.jar</ejb>
+    <ejb>soap-api.jar</ejb>
   </module>
   <library-directory>lib</library-directory>
 </application>

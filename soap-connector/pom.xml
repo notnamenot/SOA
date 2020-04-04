@@ -44,7 +44,7 @@
                 </executions>
                 <configuration>
                     <wsdlUrls>
-                        <wsdlUrl>http://localhost:8080/lab1/HelloWorld?wsdl</wsdlUrl>
+                        <wsdlUrl>http://localhost:8080/lab1/StudentServiceImpl?wsdl</wsdlUrl>
                     </wsdlUrls>
                     <keep>true</keep>
                     <packageName>pl.edu.agh.soa.soap</packageName>
