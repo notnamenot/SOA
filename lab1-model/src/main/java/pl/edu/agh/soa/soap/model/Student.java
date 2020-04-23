@@ -1,4 +1,6 @@
-package pl.edu.agh.soa.soap.models;
+package pl.edu.agh.soa.soap.model;
+//import pl.edu.agh.soa.soap.model.Student;
+
 
 import javax.xml.bind.annotation.*;
 

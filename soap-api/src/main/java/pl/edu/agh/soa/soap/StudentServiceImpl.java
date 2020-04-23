@@ -1,6 +1,6 @@
 package pl.edu.agh.soa.soap;
 
-import pl.edu.agh.soa.soap.models.Student;
+import pl.edu.agh.soa.soap.model.Student;
 
 //import org.jboss.ejb3.annotation.SecurityDomain;
 import org.jboss.annotation.security.SecurityDomain;
@@ -15,7 +15,10 @@ import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.ws.WebServiceException;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,12 +29,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Stateless
-@WebService(name = "StudentService", portName = "StudentPort", targetNamespace = "https://soap.soa.pl/lab1/ws")
+@WebService(name = "StudentService", portName = "StudentPort", targetNamespace = "https://soap.soa.pl/lab1/ws")//endpointInterface ="StudentService"
 @SecurityDomain("my-security-domain") // in standalone.xml
 @DeclareRoles({"MyRole"}) // manager, admin..
 @WebContext(contextRoot="lab1", urlPattern="/StudentServiceImpl", authMethod="BASIC", transportGuarantee="NONE")
 @SOAPBinding(style=SOAPBinding.Style.DOCUMENT, use=SOAPBinding.Use.LITERAL) //specify the mapping between the Web service and the SOAP message protocol
 public class StudentServiceImpl implements StudentService {
+
+
 
     @WebMethod()
     @RolesAllowed("MyRole")
@@ -161,15 +166,30 @@ public class StudentServiceImpl implements StudentService {
     @PermitAll
     @WebMethod(operationName = "getAvatar")
     public byte[] getAvatar(int albumNo) {
+//        File currentDirFile = new File(".");
+//        String helper = currentDirFile.getAbsolutePath();
+        LOGGER.info("getAvatar: path:" + this.getClass().getResource("./avatar.png")); // in wildfly cotalogue
 
         try{
-            String fileName = ".\\avatar.png";
+            String fileName = "./avatar.png";
             Path path  = Paths.get(fileName);
-            LOGGER.info("getAvatar: path:" + path.toAbsolutePath()); // in wildfly cotalogue
+//            LOGGER.info("getAvatar: path:" + path.toAbsolutePath()); // in wildfly cotalogue
+//            URL url = this.getClass().getResource("/avatar.png"); // path:vfs:/D:/Programy/WildFly/wildfly-18.0.1/bin/content/ipachel-zad1.ear/soap-api.jar/avatar.png
 
+//            byte[] fileContent = Files.readAllBytes(url.toString());
+
+//            Path path  = Paths.get(".");
+//            LOGGER.info("getAvatar: path:" + path.toAbsolutePath()); // in wildfly cotalogue
+//            URL url = this.getClass().getResource("/avatar.png"); // path:vfs:/D:/Programy/WildFly/wildfly-18.0.1/bin/content/ipachel-zad1.ear/soap-api.jar/avatar.png
+//
+//            URL res = getClass().getClassLoader().getResource("avatar.png");
+//            LOGGER.info("getAvatar: path:" + res.toURI()); // in wildfly cotalogue
             byte[] fileContent = Files.readAllBytes(path.toAbsolutePath());
 //          String encodedFile = Base64.getEncoder().encodeToString(fileContent);
 //          encodedFile = new String(Base64.encodeBase64(bytes), "UTF-8");
+//
+//            File currentDirFile = new File(".");
+//            String helper = currentDirFile.getAbsolutePath();
 
             return Base64.getEncoder().encode(fileContent);
 
@@ -177,6 +197,7 @@ public class StudentServiceImpl implements StudentService {
             System.err.println(ex);
             throw new WebServiceException(ex);
         }
+
     }
 
 
