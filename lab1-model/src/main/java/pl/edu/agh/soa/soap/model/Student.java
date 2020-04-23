@@ -37,6 +37,13 @@ public class Student {
     public void setCourses(List<String> courses) { this.courses = courses; }
     public void setAvatar(byte[] avatar) { this.avatar = avatar; }
 
+    public void updateFromStudent(Student student) {
+        this.setFirsName(student.getFirsName());
+        this.setLastName(student.getLastName());
+        this.setCourses(student.getCourses());
+        //you can't change albumNo!
+    }
+
     public static final class Builder {
         private String firstName;
         private String lastName;
@@ -83,7 +90,10 @@ public class Student {
             student.firstName = this.firstName;
             student.lastName = this.lastName;
             student.albumNo = this.albumNo;
-            student.courses = this.courses;
+            if (null == this.courses)
+                student.courses = new ArrayList<>();
+            else
+                student.courses = this.courses;
 
             return student;
         }
