@@ -1,6 +1,6 @@
 package pl.edu.agh.soa.soap;
 
-import pl.edu.agh.soa.soap.model.Student;
+import pl.edu.agh.soa.model.Student;
 
 //import org.jboss.ejb3.annotation.SecurityDomain;
 import org.jboss.annotation.security.SecurityDomain;
@@ -15,10 +15,7 @@ import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.ws.WebServiceException;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

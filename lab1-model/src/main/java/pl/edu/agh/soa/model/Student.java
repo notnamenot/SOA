@@ -1,4 +1,4 @@
-package pl.edu.agh.soa.soap.model;
+package pl.edu.agh.soa.model;
 //import pl.edu.agh.soa.soap.model.Student;
 
 
@@ -71,7 +71,7 @@ public class Student {
             return this;
         }
 
-        public Builder addCourse(String course){ //sprawdzac czy jest zainicjowana
+        public Builder addCourse(String course){
             if (this.courses == null)
                 this.courses = new ArrayList<>();
             this.courses.add(course);

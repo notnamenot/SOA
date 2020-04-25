@@ -1,9 +1,12 @@
 package pl.edu.agh.soa.rest;
 
-import pl.edu.agh.soa.soap.model.Student;
-import pl.edu.agh.soa.soap.model.StudentList;
+//import io.jsonwebtoken.Jwts;
+//import io.jsonwebtoken.SignatureAlgorithm;
+//import pl.edu.agh.soa.rest.jwt.JWTTokenNeeded;
+import pl.edu.agh.soa.model.Student;
+import pl.edu.agh.soa.model.StudentList;
 
-
+//import javax.crypto.KeyGenerator;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -14,18 +17,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.lang.Object;
 import java.util.Base64;
 //import utils.Base64Utils;
+import org.apache.commons.io.IOUtils;
 
-import static java.util.stream.Collectors.toList;
+//import static io.jsonwebtoken.impl.JwtMap.toDate;
+//import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static org.jboss.ws.api.Log.LOGGER;
 
 @Path("students")
@@ -40,12 +43,15 @@ public class StudentService {
     @Inject
     private StudentList students; //instance żeby przy każdym żądaniu był nowy obiekt
 
+//    @Inject
+//    private KeyGenerator keyGenerator;
+
     @GET
     @Path("/")
     public Response getStudents(@QueryParam("course") String course,
                                 @QueryParam("firstName") String firstName) {
         List<Student> filteredStudents = students.filter(course, firstName);
-        LOGGER.info("getStudents:\tcourse:\n " + course + ";firsName:" + firstName + ";filteredStudents:" + filteredStudents);
+        LOGGER.info("getStudents:\tcourse:\n " + course + ";firsName:" + firstName + ";filteredStudents:" + filteredStudents.toString());
         return Response.ok(filteredStudents).status(Response.Status.OK).variant(null).build(); //200
     }
 
@@ -89,19 +95,42 @@ public class StudentService {
 //        inputStream.read(targetArray);
         String encoded = Base64.getEncoder().encodeToString(targetArray);
 
-        File file = new File("resources/abc.txt");
+        File file = new File("resources/avatar.png");
         String absolutePath = file.getAbsolutePath();
         System.out.println(absolutePath);
 
-        return Response.ok(encoded).status(Response.Status.OK).build();    // 200
+        InputStream inputStream2 = this.getClass().getResourceAsStream("avatar.png");
+        byte[] targetArray2 = new byte[inputStream.available()];
+        String encoded2 = Base64.getEncoder().encodeToString(targetArray2);
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        URL resource = classLoader.getResource( "avatar.png");
+        System.out.println("URL:" + resource.toString());
+
+        InputStream resource2 = classLoader.getResourceAsStream("avatar.png");
+        System.out.println("InputStream" + resource2.available());
+        byte[] targetArray3 = new byte[resource2.available()];
+        String encoded3 = Base64.getEncoder().encodeToString(targetArray3);
+
+        byte[] bytes = IOUtils.toByteArray(resource2);
+//        File file2 = new File(resource.getFile());
+//        String absolutePath2 = file.getAbsolutePath();
+//        System.out.println("ap" + absolutePath2);
+//        String encoded3 = Base64.getEncoder().encodeToString( Files.readAllBytes(file2.toPath()));
+
+//        URL resource2 = this.getClass().getResource("avatar.png");
+//        InputStream inputStream3 = resource2.openStream();
+
+        return Response.ok(encoded3).status(Response.Status.OK).build();    // 200
     }
 
     @POST
     @Path("/")
+//    @JWTTokenNeeded  // annotation that binds to a filter
     public Response addStudentWithFirstNameLastNameAlbumNo(Student student) {
 
         URI uri =  uriInfo.getAbsolutePath(); //żeby zwrócić ścieżkę do nowego zasobu
-        LOGGER.info("addStudentWithFirstNameLastNameAlbumNo:\n " + student);
+        LOGGER.info("addStudentWithFirstNameLastNameAlbumNo:\n " + student.toString());
 
         /*
         LOGGER.info("getAbsolutePath:\n " + uri);
@@ -117,7 +146,7 @@ public class StudentService {
             return Response.notModified().status(Response.Status.CONFLICT).build(); //409 The request could not be completed due to a conflict with the current state of the resource.
         else {
             students.addStudent(student);
-            LOGGER.info("addStudentWithFirstNameLastNameAlbumNo:\n " + students);
+            LOGGER.info("addStudentWithFirstNameLastNameAlbumNo:\n " + students.toString());
             return Response.ok(student).status(Response.Status.CREATED).build(); //.created(uri) // 201
         }
     }
@@ -141,7 +170,39 @@ public class StudentService {
         students.deleteStudent(albumNo);
         return Response.ok().status(Response.Status.NO_CONTENT).build(); //204
     }
+//
+//    @POST
+//    @Path("login")
+//    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+//    public Response authenticateUser(@FormParam("login") String login,
+//                                     @FormParam("password") String password) {
+//        try {
+//
+//            // Authenticate the user using the credentials provided
+////            authenticate(login, password);
+//
+//            // Issue a token for the user
+//            String token = issueToken(login);
+//
+//            // Return the token on the response
+//            return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
+//
+//        } catch (Exception e) {
+//            return Response.status(Response.Status.UNAUTHORIZED).build();
+//        }
+//    }
 
+//    private String issueToken(String login) {
+//        Key key = keyGenerator.generateKey();
+//        String jwtToken = Jwts.builder()
+//                .setSubject(login)
+//                .setIssuer(uriInfo.getAbsolutePath().toString())
+//                .setIssuedAt(new Date())
+//                .setExpiration(Date.from(LocalDateTime.now().plusMinutes(15L).atZone(ZoneId.systemDefault()).toInstant()))
+//                .signWith(SignatureAlgorithm.HS512, key)
+//                .compact();
+//        return jwtToken;
+//    }
 
 //    private Student addNewStudent(Student student) {
 ////        List<Student> students = initialStudentList();

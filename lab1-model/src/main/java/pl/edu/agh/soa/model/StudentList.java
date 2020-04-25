@@ -1,12 +1,10 @@
-package pl.edu.agh.soa.soap.model;
+package pl.edu.agh.soa.model;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -83,5 +81,14 @@ public class StudentList {
                 .filter(s -> s.getAlbumNo() == albumNo)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Student s : this.students) {
+            sb.append(s.toString()).append("\n");
+        }
+        return sb.toString();
     }
 }
