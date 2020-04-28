@@ -8,6 +8,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+//our 'database'
 //@Singleton
 @RequestScoped
 public class StudentList {

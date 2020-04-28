@@ -1,9 +1,6 @@
 package pl.edu.agh.soa.model;
-//import pl.edu.agh.soa.soap.model.Student;
-
 
 import javax.xml.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
