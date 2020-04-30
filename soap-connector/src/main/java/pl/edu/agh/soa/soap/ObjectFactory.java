@@ -52,14 +52,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Student }
-     * 
-     */
-    public Student createStudent() {
-        return new Student();
-    }
-
-    /**
      * Create an instance of {@link AddCourseToStudent }
      * 
      */
@@ -204,11 +196,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Student.Courses }
+     * Create an instance of {@link Student }
      * 
      */
-    public Student.Courses createStudentCourses() {
-        return new Student.Courses();
+    public Student createStudent() {
+        return new Student();
     }
 
     /**

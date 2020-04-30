@@ -46,8 +46,8 @@ public class Client {
         sb.append("\n\nfirstName: ").append(student.getFirstName())
             .append("\nlastName: ").append(student.getLastName())
             .append("\nalbumNo: ").append(student.getAlbumNo());
-        if (student.getCourses() != null)
-            sb.append("\ncourses: ").append(student.getCourses().getCourse());
+        if (student.getCourses() != null);
+//            sb.append("\ncourses: ").append(student.getCourses().getCourse());
         return sb.toString();
     }
     private static String printStudentList(List<Student> students) {

@@ -1,5 +1,6 @@
 package pl.edu.agh.soa.rest;
 
+import org.apache.commons.io.FileUtils;
 import pl.edu.agh.soa.model.Student;
 import pl.edu.agh.soa.model.StudentList;
 import pl.edu.agh.soa.rest.jwt.JWTTokenNeeded;
@@ -102,6 +103,14 @@ public class StudentService {
         byte[] targetArray3 = new byte[resource2.available()];
         String encoded3 = Base64.getEncoder().encodeToString(targetArray3);
 
+        ClassLoader cl = this.getClass().getClassLoader();
+        URL r = cl.getResource( "avatar.png");
+        System.out.println("URL2:" + (r != null ? r.toString() : null));
+//        InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("avatar.png");
+//        byte[] targetArray4 = new byte[inStream.available()];
+//        String encoded4 = Base64.getEncoder().encodeToString(targetArray4);
+//        System.out.println("e4: " + encoded4);
+
         byte[] bytes = IOUtils.toByteArray(resource2);
 //        File file2 = new File(resource.getFile());
 //        String absolutePath2 = file.getAbsolutePath();
@@ -111,7 +120,12 @@ public class StudentService {
 //        URL resource2 = this.getClass().getResource("avatar.png");
 //        InputStream inputStream3 = resource2.openStream();
 
-        return Response.ok(encoded3).status(Response.Status.OK).build();    // 200
+        byte[] fileContent = FileUtils.readFileToByteArray(new File("D:\\Studia\\s6\\soa\\soap\\lab1\\rest-api\\WEB-INF\\avatar.png"));
+//        fileContent = FileUtils.readFileToByteArray(new File("avatar.png"));
+//        System.out.println("Path : " + new File("avatar.png").getAbsolutePath());
+        String encodedString = Base64.getEncoder().encodeToString(fileContent);
+
+        return Response.ok(encodedString).status(Response.Status.OK).build();    // 200
     }
 
     @POST
@@ -137,12 +151,12 @@ public class StudentService {
         else {
             students.addStudent(student);
             LOGGER.info("addStudentWithFirstNameLastNameAlbumNo:\n " + students.toString());
-            return Response.ok(student).status(Response.Status.CREATED).build(); //.created(uri) // 201
+            return Response.ok().status(Response.Status.CREATED).build(); //.created(uri) // 201
         }
     }
 
     @PUT
-    @Path("/")
+    @Path("/{albumNo}")
     @JWTTokenNeeded
     public Response editStudent(Student student) {
         if (!students.exists(student.getAlbumNo()))

@@ -1,18 +1,35 @@
 package pl.edu.agh.soa.model;
 
+//import com.vladmihalcea.hibernate.type.array.ListArrayType;
+
+//import javax.persistence.Basic;
+//import javax.persistence.Entity;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.Id;
 import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.IOException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 @XmlRootElement(name = "student")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Student {
+//@Entity(name="Student")
+//@TypeDef(
+//        name = "list-array",
+//        typeClass = ListArrayType.class
+//)
+public class Student implements Serializable {
 
     private String firstName;
     private String lastName;
+//    @Id
+//    @GeneratedValue
     private int albumNo;
-    @XmlElementWrapper(name="courses")
-    @XmlElement(name="course")
+//    @XmlElementWrapper(name="courses")
+//    @XmlElement(name="course")
     private List<String> courses;
     private byte[] avatar;
 
@@ -94,7 +111,6 @@ public class Student {
 
             return student;
         }
-
     }
 
     public static Builder builder() {
@@ -104,10 +120,18 @@ public class Student {
 
     @Override
     public String toString() {
-        return "firstName: " + this.firstName +
-                "\nlastName: " + this.lastName  +
-                "\nalbumNo: " + this.albumNo +
-                "\ncourses:" + this.courses;
+//        return  "\nfirstName: " + this.firstName +
+//                "\nlastName: " + this.lastName  +
+//                "\nalbumNo: " + this.albumNo +
+//                "\ncourses:" + this.courses;
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\nfirstName: ").append(this.firstName)
+            .append("\nlastName: ").append(this.lastName)
+            .append("\nalbumNo: ").append(this.albumNo)
+            .append("\ncourses: ").append(this.courses).append("\n");
+
+        return sb.toString();
     }
 
     public void addCourse(String course){
