@@ -319,6 +319,20 @@
                   <target>8</target>
               </configuration>
           </plugin>
+         <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.2</version>
+            <configuration>
+<!-- project.build.directory = target             -->
+               <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+               <resources>
+                  <resource>
+                     <directory>resources</directory>
+                     <filtering>true</filtering>
+                  </resource>
+               </resources>
+            </configuration>
+         </plugin>
       </plugins>
    </build>
 

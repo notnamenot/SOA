@@ -1,5 +1,6 @@
 package pl.edu.agh.soa.rest;
 
+import com.google.common.io.ByteStreams;
 import org.apache.commons.io.FileUtils;
 import pl.edu.agh.soa.model.Student;
 import pl.edu.agh.soa.model.StudentList;
@@ -75,76 +76,41 @@ public class StudentService {
 //        if (!students.exists(albumNo))
 //            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
 
-//        return Response.ok(Base64Utils.encoder("/home/piotr/SOA/Zadanie1/lab/soap-api/src/main/resources/avatar.png"))
-//                .status(Response.Status.OK).build();
+//        File file = new File("img/avatar.png");
+//        String absolutePath = file.getAbsolutePath();
+//        System.out.println(absolutePath);
+//
+//        InputStream inputStream = this.getClass().getResourceAsStream("img\\avatar.png");
+//        byte[] targetArray2 = new byte[inputStream.available()];//tylko wielekość
+//        String encoded2 = Base64.getEncoder().encodeToString(targetArray2);
 
-        String fileName = "/avatar.png";
-        InputStream inputStream = this.getClass().getResourceAsStream(fileName);
-        System.out.println(inputStream);
-        byte[] targetArray = new byte[inputStream.available()];
-//        inputStream.read(targetArray);
-        String encoded = Base64.getEncoder().encodeToString(targetArray);
-
-        File file = new File("resources/avatar.png");
-        String absolutePath = file.getAbsolutePath();
-        System.out.println(absolutePath);
-
-        InputStream inputStream2 = this.getClass().getResourceAsStream("avatar.png");
-        byte[] targetArray2 = new byte[inputStream.available()];
-        String encoded2 = Base64.getEncoder().encodeToString(targetArray2);
-
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//        ClassLoader cl = this.getClass().getClassLoader();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); //If we don't create any threads in the entire application, the main thread will end up with the system class loader as their context class loader.
         URL resource = classLoader.getResource( "avatar.png");
         System.out.println("URL:" + (resource != null ? resource.toString() : null));
+//        InputStream input = classLoader.getResourceAsStream("avatar.png");
 
         InputStream resource2 = classLoader.getResourceAsStream("avatar.png");
-        if (resource2 == null) throw new AssertionError();
-        System.out.println("InputStream" + resource2.available());
-        byte[] targetArray3 = new byte[resource2.available()];
+//        System.out.println("InputStream" + resource2.available());
+////        byte[] targetArray3 = new byte[resource2.available()];
+        byte[] targetArray3 = ByteStreams.toByteArray(resource2);
         String encoded3 = Base64.getEncoder().encodeToString(targetArray3);
+        System.out.println("encoded3"+encoded3);
 
-        ClassLoader cl = this.getClass().getClassLoader();
-        URL r = cl.getResource( "avatar.png");
-        System.out.println("URL2:" + (r != null ? r.toString() : null));
-//        InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("avatar.png");
-//        byte[] targetArray4 = new byte[inStream.available()];
-//        String encoded4 = Base64.getEncoder().encodeToString(targetArray4);
-//        System.out.println("e4: " + encoded4);
+////        byte[] fileContent = FileUtils.readFileToByteArray(new File("D:\\Studia\\s6\\soa\\soap\\lab1\\rest-api\\WEB-INF\\avatar.png"));
+//        byte[] fileContent = FileUtils.readFileToByteArray(new File("img\\avatar.png"));//D:\Programy\WildFly\wildfly-18.0.1\bin\img\avatar.png
+//        fileContent = FileUtils.readFileToByteArray(new File("img\\avatar.png"));
+////        System.out.println("Path : " + new File("avatar.png").getAbsolutePath());
+//        String encodedString = Base64.getEncoder().encodeToString(fileContent);
 
-        byte[] bytes = IOUtils.toByteArray(resource2);
-//        File file2 = new File(resource.getFile());
-//        String absolutePath2 = file.getAbsolutePath();
-//        System.out.println("ap" + absolutePath2);
-//        String encoded3 = Base64.getEncoder().encodeToString( Files.readAllBytes(file2.toPath()));
-
-//        URL resource2 = this.getClass().getResource("avatar.png");
-//        InputStream inputStream3 = resource2.openStream();
-
-        byte[] fileContent = FileUtils.readFileToByteArray(new File("D:\\Studia\\s6\\soa\\soap\\lab1\\rest-api\\WEB-INF\\avatar.png"));
-//        fileContent = FileUtils.readFileToByteArray(new File("avatar.png"));
-//        System.out.println("Path : " + new File("avatar.png").getAbsolutePath());
-        String encodedString = Base64.getEncoder().encodeToString(fileContent);
-
-        return Response.ok(encodedString).status(Response.Status.OK).build();    // 200
+        return Response.ok(encoded3).status(Response.Status.OK).build();    // 200
     }
 
     @POST
     @Path("/")
     @JWTTokenNeeded
     public Response addStudentWithFirstNameLastNameAlbumNo(Student student) {
-
-//        URI uri =  uriInfo.getAbsolutePath(); //żeby zwrócić ścieżkę do nowego zasobu
         LOGGER.info("addStudentWithFirstNameLastNameAlbumNo:\n " + student.toString());
-
-        /*
-        LOGGER.info("getAbsolutePath:\n " + uri);
-        LOGGER.info("getPath:\n " + uriInfo.getPath());
-        LOGGER.info("getBaseUri:\n " + uriInfo.getBaseUri());
-        LOGGER.info("getRequestUri:\n " + uriInfo.getRequestUri());
-        LOGGER.info("getMatchedURIs:\n " + uriInfo.getMatchedURIs());
-        LOGGER.info("getPathParameters:\n " + uriInfo.getPathParameters());
-        LOGGER.info("getPathSegments:\n " + uriInfo.getPathSegments());
-         */
 
         if (students.exists(student.getAlbumNo()))
             return Response.notModified().status(Response.Status.CONFLICT).build(); //409 The request could not be completed due to a conflict with the current state of the resource.
