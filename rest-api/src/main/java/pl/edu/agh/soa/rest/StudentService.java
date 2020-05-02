@@ -4,6 +4,7 @@ import com.google.common.io.ByteStreams;
 import org.apache.commons.io.FileUtils;
 import pl.edu.agh.soa.model.Student;
 import pl.edu.agh.soa.model.StudentList;
+import pl.edu.agh.soa.model.StudentOuterClass;
 import pl.edu.agh.soa.rest.jwt.JWTTokenNeeded;
 
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Base64;
 //import utils.Base64Utils;
@@ -93,7 +95,8 @@ public class StudentService {
         InputStream resource2 = classLoader.getResourceAsStream("avatar.png");
 //        System.out.println("InputStream" + resource2.available());
 ////        byte[] targetArray3 = new byte[resource2.available()];
-        byte[] targetArray3 = ByteStreams.toByteArray(resource2);
+        assert resource2 != null;
+        byte[] targetArray3 = IOUtils.toByteArray(resource2);//ByteStreams.toByteArray(resource2);
         String encoded3 = Base64.getEncoder().encodeToString(targetArray3);
         System.out.println("encoded3"+encoded3);
 
@@ -141,5 +144,24 @@ public class StudentService {
 
         students.deleteStudent(albumNo);
         return Response.ok().status(Response.Status.NO_CONTENT).build(); //204
+    }
+
+    @GET
+    @Path("/protobuf")
+    @Produces("application/protobuf")//APPLICATION_OCTET_STREAM)
+    public Response getProtoStudent() {
+        StudentOuterClass.Student.Builder builder = StudentOuterClass.Student.newBuilder();
+
+        List<String> courses = new ArrayList<>();
+        courses.add("SOA");
+        courses.add("UNIX");
+        builder.addAllCourses(courses);
+        builder
+                .setFirstName("Ala")
+                .setLastName("Makota")
+                .setAlbumNo(666);
+        StudentOuterClass.Student student = builder.build();
+
+        return Response.ok(student.toByteArray(), "application/protobuf").build();
     }
 }

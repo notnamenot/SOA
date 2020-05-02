@@ -37,6 +37,8 @@ public class TestClient {
 
         client.getAvatar();
 
+        System.out.println(client.getProtoBuffStudent());
+
         client.close();
     }
 }

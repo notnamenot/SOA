@@ -1,0 +1,9 @@
+syntax = "proto3";
+package pl.edu.agh.soa.model;
+
+message Student {
+    int32 album_no = 1;
+    string first_name = 2;
+    string last_name = 3;
+    repeated string courses = 5;
+}

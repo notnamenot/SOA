@@ -1,5 +1,9 @@
 package pl.edu.agh.soa.model;
 
+//PROTO
+//lab1> .\protoc-3.6.1-win32\bin\protoc.exe -I=.\lab1-model\src\main\java\pl\edu\agh\soa\model --java_out=.\lab1-model\src\main\java student.proto
+//https://developers.google.com/protocol-buffers/docs/javatutorial
+
 //import com.vladmihalcea.hibernate.type.array.ListArrayType;
 
 //import javax.persistence.Basic;
@@ -31,7 +35,7 @@ public class Student implements Serializable {
 //    @XmlElementWrapper(name="courses")
 //    @XmlElement(name="course")
     private List<String> courses;
-    private byte[] avatar;
+//    private byte[] avatar;
 
     public Student() {}
 
@@ -43,13 +47,13 @@ public class Student implements Serializable {
     public int getAlbumNo() { return albumNo; }
     public String getLastName() { return lastName; }
     public List<String> getCourses() { return courses; }
-    public byte[] getAvatar() { return avatar; }
+//    public byte[] getAvatar() { return avatar; }
 
     public void setFirsName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
     public void setAlbumNr(int albumNo) { this.albumNo = albumNo; }
     public void setCourses(List<String> courses) { this.courses = courses; }
-    public void setAvatar(byte[] avatar) { this.avatar = avatar; }
+//    public void setAvatar(byte[] avatar) { this.avatar = avatar; }
 
     public void updateFromStudent(Student student) {
         this.setFirsName(student.getFirsName());
@@ -120,10 +124,6 @@ public class Student implements Serializable {
 
     @Override
     public String toString() {
-//        return  "\nfirstName: " + this.firstName +
-//                "\nlastName: " + this.lastName  +
-//                "\nalbumNo: " + this.albumNo +
-//                "\ncourses:" + this.courses;
         StringBuilder sb = new StringBuilder();
 
         sb.append("\nfirstName: ").append(this.firstName)

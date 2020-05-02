@@ -1,7 +1,9 @@
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import pl.edu.agh.soa.model.Student;
+import pl.edu.agh.soa.model.StudentOuterClass;
 import pl.edu.agh.soa.model.User;
 
 import javax.imageio.ImageIO;
@@ -14,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Base64;
 import java.util.List;
@@ -135,8 +138,6 @@ public class Client {
 
         printResponseStatusInfo();
 
-        List<String> courses = null;
-
         String avatar = response.readEntity(String.class);
 //        System.out.println(new String(avatar));
 
@@ -152,13 +153,41 @@ public class Client {
             ImageIO.write(bImage2, "jpg", new File("output.jpg"));
 
             Desktop dt = Desktop.getDesktop();
-            dt.open(new File("D:\\Studia\\s6\\soa\\soap\\lab1\\output.jpg"));
+            dt.open(new File("output.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            reset();
         }
-
-
     }
+
+
+    public String getProtoBuffStudent() {
+        printMethodName();
+
+        target = target.path("students").path("protobuf");
+
+        InputStream response = target
+                .request()
+                .header("accept", "application/protobuf")
+                .get(InputStream.class);
+//        response = target.request().header("accept", "application/protobuf").get();
+
+//        StudentOuterClass student = response.readEntity(new GenericType<StudentOuterClass>() {});
+//        printResponseStatusInfo();
+//        List<Student> students = response.readEntity(new GenericType<List<Student>>() {});
+
+        try {
+            StudentOuterClass.Student student = StudentOuterClass.Student.parseFrom(IOUtils.toByteArray(response));
+            return student.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            reset();
+        }
+        return "nope";
+    }
+
 
     private void printMethodName() {
         System.out.println("\nMethod name: " + new Throwable().getStackTrace()[1].getMethodName());

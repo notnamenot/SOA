@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="lastName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="albumNo" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
  *         &lt;element name="courses" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="avatar" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -37,8 +36,7 @@ import javax.xml.bind.annotation.XmlType;
     "firstName",
     "lastName",
     "albumNo",
-    "courses",
-    "avatar"
+    "courses"
 })
 public class Student {
 
@@ -47,7 +45,6 @@ public class Student {
     protected int albumNo;
     @XmlElement(nillable = true)
     protected List<String> courses;
-    protected byte[] avatar;
 
     /**
      * Gets the value of the firstName property.
@@ -140,28 +137,6 @@ public class Student {
             courses = new ArrayList<String>();
         }
         return this.courses;
-    }
-
-    /**
-     * Gets the value of the avatar property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
-     */
-    public byte[] getAvatar() {
-        return avatar;
-    }
-
-    /**
-     * Sets the value of the avatar property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
-     */
-    public void setAvatar(byte[] value) {
-        this.avatar = value;
     }
 
 }
