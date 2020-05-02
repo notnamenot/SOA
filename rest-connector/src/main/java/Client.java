@@ -86,9 +86,6 @@ public class Client {
         printMethodName();
 
         User user = new User(login,pass);
-//        User user = new User();
-//        user.setLogin(login);
-//        user.setPassword(pass);
         target = target.path("auth").path("login");
 
         response = target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
