@@ -23,7 +23,7 @@ import java.util.List;
 
 public class Client {
 
-    private static final String BASE_API_URL = "http://localhost:8080/rest-api";
+    private static final String BASE_API_URL = "http://localhost:8080/rest-api/api";
 
     private ResteasyClient client;
     private ResteasyWebTarget target;

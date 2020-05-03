@@ -48,7 +48,7 @@ public class StudentList {
 //        students = new ArrayList<>();
     }
 
-    public boolean exists(int albumNo) {
+    public boolean exist(int albumNo) {
         return getStudent(albumNo) != null;
     }
 
@@ -71,7 +71,7 @@ public class StudentList {
         return students
                 .stream()
                 .filter(s -> course == null || s.getCourses().contains(course))
-                .filter(s -> firstName == null || s.getFirsName().equals(firstName))
+                .filter(s -> firstName == null || s.getFirstName().equals(firstName))
                 .collect(toList());
         //                .collect(Collectors.toList());
     }

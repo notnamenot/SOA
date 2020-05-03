@@ -43,20 +43,20 @@ public class Student implements Serializable {
         return builder().firstName("None").lastName("None").albumNo(0).build();
     }
 
-    public String getFirsName() { return firstName; }
+    public String getFirstName() { return firstName; }
     public int getAlbumNo() { return albumNo; }
     public String getLastName() { return lastName; }
     public List<String> getCourses() { return courses; }
 //    public byte[] getAvatar() { return avatar; }
 
-    public void setFirsName(String firstName) { this.firstName = firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
     public void setAlbumNr(int albumNo) { this.albumNo = albumNo; }
     public void setCourses(List<String> courses) { this.courses = courses; }
 //    public void setAvatar(byte[] avatar) { this.avatar = avatar; }
 
     public void updateFromStudent(Student student) {
-        this.setFirsName(student.getFirsName());
+        this.setFirstName(student.getFirstName());
         this.setLastName(student.getLastName());
         this.setCourses(student.getCourses());
         //you can't change albumNo!
