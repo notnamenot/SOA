@@ -132,7 +132,7 @@ public class StudentService {
 
     @GET
     @Path("/protobuf")
-    @Produces("application/protobuf")//APPLICATION_OCTET_STREAM
+    @Produces("application/protobuf")
     @ApiOperation(value = "Retrieve ProtocolBuffer Student")
     public Response getProtoStudent() {
         StudentOuterClass.Student.Builder builder = StudentOuterClass.Student.newBuilder();

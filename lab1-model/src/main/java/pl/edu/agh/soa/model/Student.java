@@ -4,12 +4,7 @@ package pl.edu.agh.soa.model;
 //lab1> .\protoc-3.6.1-win32\bin\protoc.exe -I=.\lab1-model\src\main\java\pl\edu\agh\soa\model --java_out=.\lab1-model\src\main\java student.proto
 //https://developers.google.com/protocol-buffers/docs/javatutorial
 
-//import com.vladmihalcea.hibernate.type.array.ListArrayType;
 
-//import javax.persistence.Basic;
-//import javax.persistence.Entity;
-//import javax.persistence.GeneratedValue;
-//import javax.persistence.Id;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,17 +15,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 @XmlRootElement(name = "student")
 @XmlAccessorType(XmlAccessType.FIELD)
-//@Entity(name="Student")
-//@TypeDef(
-//        name = "list-array",
-//        typeClass = ListArrayType.class
-//)
 public class Student implements Serializable {
 
     private String firstName;
     private String lastName;
-//    @Id
-//    @GeneratedValue
     private int albumNo;
 //    @XmlElementWrapper(name="courses")
 //    @XmlElement(name="course")

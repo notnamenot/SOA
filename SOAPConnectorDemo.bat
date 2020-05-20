@@ -1,2 +1,2 @@
-java -cp .\soap-connector\target\classes pl.edu.agh.soa.soap.Client
+java -cp .\soap-connector\target\classes pl.edu.agh.soa.soap.test.Client
 pause

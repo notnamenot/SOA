@@ -1,6 +1,6 @@
-import pl.edu.agh.soa.model.Student;
+package test;
 
-import java.io.IOException;
+import pl.edu.agh.soa.model.Student;
 
 public class TestClient {
     public static void main(String[] args) {
@@ -35,7 +35,7 @@ public class TestClient {
         client.deleteStudent(30, token); // 204
         client.deleteStudent(667, token); // 404
 
-        client.getAvatar();
+        //client.getAvatar();
 
         System.out.println(client.getProtoBuffStudent());
 
