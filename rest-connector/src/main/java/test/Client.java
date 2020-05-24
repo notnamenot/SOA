@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import pl.edu.agh.soa.model.Group;
 import pl.edu.agh.soa.model.Student;
 import pl.edu.agh.soa.model.StudentOuterClass;
 import pl.edu.agh.soa.model.User;
@@ -209,4 +210,19 @@ public class Client {
     }
 
 
+    public Group getStudentGroup(int albumNo) {
+        printMethodName();
+
+        target = target.path("students").path(Integer.toString(albumNo)).path("group");
+        response = target.request().get();
+
+        printResponseStatusInfo();
+
+        Group group = null;
+        if (response.getStatusInfo() == Response.Status.OK) {
+            group = response.readEntity(new GenericType<Group>() {});
+        }
+        reset();
+        return group;
+    }
 }

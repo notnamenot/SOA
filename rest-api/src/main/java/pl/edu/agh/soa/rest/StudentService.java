@@ -2,6 +2,7 @@ package pl.edu.agh.soa.rest;
 
 import pl.edu.agh.soa.dao.StudentServiceDAO;
 import pl.edu.agh.soa.jpa.StudentsManager;
+import pl.edu.agh.soa.model.Group;
 import pl.edu.agh.soa.model.Student;
 import pl.edu.agh.soa.model.StudentList;
 import pl.edu.agh.soa.model.StudentOuterClass;
@@ -34,9 +35,6 @@ public class StudentService {
 
     @Inject
     private StudentList students;
-
-//    @Inject
-//    StudentsManager studentsManager;
 
     @EJB
     StudentServiceDAO dao = new StudentServiceDAO();
@@ -141,13 +139,22 @@ public class StudentService {
     public Response addStudentWithFirstNameLastNameAlbumNo(@ApiParam(value = "student to be added", required = true) Student student) {
         LOGGER.info("addStudentWithFirstNameLastNameAlbumNo:\n " + student.toString());
 
-        if (students.exist(student.getAlbumNo()))
-            return Response.notModified().status(Response.Status.CONFLICT).build(); //409 The request could not be completed due to a conflict with the current state of the resource.
-        else {
-            students.addStudent(student);
-            LOGGER.info("addStudentWithFirstNameLastNameAlbumNo:\n " + students.toString());
+        try {
+            dao.addStudent(student);
+            LOGGER.info("\n\n\nstudent:\n\n\n\n" + student);
             return Response.ok().status(Response.Status.CREATED).build(); //.created(uri) // 201
         }
+        catch (Exception e) {
+            LOGGER.info("Exception!:\n " + students.toString());
+            return Response.notModified().status(Response.Status.CONFLICT).build(); // 409 The request could not be completed due to a conflict with the current state of the resource.
+        }
+//        if (students.exist(student.getAlbumNo()))
+//            return Response.notModified().status(Response.Status.CONFLICT).build(); //409 The request could not be completed due to a conflict with the current state of the resource.
+//        else {
+//            students.addStudent(student);
+//            LOGGER.info("addStudentWithFirstNameLastNameAlbumNo:\n " + students.toString());
+//            return Response.ok().status(Response.Status.CREATED).build(); //.created(uri) // 201
+//        }
     }
 
     @PUT
@@ -156,11 +163,22 @@ public class StudentService {
     @ApiOperation(value = "Update student", authorizations = { @Authorization(value = "jwt")}, notes = "jwt auth needed" )
     @ApiResponses({@ApiResponse(code = 204, message = "No Content"), @ApiResponse(code = 404, message = "Not Found")})
     public Response editStudent(@ApiParam(value = "student to be edited", required = true) Student student) {
-        if (!students.exist(student.getAlbumNo()))
-            return Response.notModified().status(Response.Status.NOT_FOUND).build(); // 404
 
-        students.getStudent(student.getAlbumNo()).updateFromStudent(student);
-        return Response.ok().status(Response.Status.NO_CONTENT).build();    // 204
+        try {
+            dao.editStudent(student);
+            LOGGER.info("\n\n\nstudent:\n\n\n\n" + student);
+            return Response.ok().status(Response.Status.NO_CONTENT).build();    // 204
+        }
+        catch (Exception ex) {
+            LOGGER.info("Exception!:\n " + students.toString());
+            return Response.notModified().status(Response.Status.NOT_FOUND).build(); // 404
+        }
+
+//        if (!students.exist(student.getAlbumNo()))
+//            return Response.notModified().status(Response.Status.NOT_FOUND).build(); // 404
+//
+//        students.getStudent(student.getAlbumNo()).updateFromStudent(student);
+//        return Response.ok().status(Response.Status.NO_CONTENT).build();    // 204
     }
 
     @DELETE
@@ -169,11 +187,22 @@ public class StudentService {
     @ApiOperation(value = "Remove student", authorizations = { @Authorization(value = "jwt")}, notes = "jwt auth needed" )
     @ApiResponses({@ApiResponse(code = 204, message = "No Content"), @ApiResponse(code = 404, message = "Not Found")})
     public Response deleteStudent(@ApiParam(value = "student to be removed", required = true) @PathParam("albumNo") int albumNo) {
-        if (!students.exist(albumNo))
-            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
 
-        students.deleteStudent(albumNo);
-        return Response.ok().status(Response.Status.NO_CONTENT).build(); //204
+        try {
+            dao.deleteStudent(albumNo);
+            LOGGER.info("\n\n\nremove student:" + albumNo);
+            return Response.ok().status(Response.Status.NO_CONTENT).build();    // 204
+        }
+        catch (Exception ex) {
+            LOGGER.info("Exception! removing :\n " + albumNo);
+            return Response.notModified().status(Response.Status.NOT_FOUND).build(); // 404
+        }
+
+//        if (!students.exist(albumNo))
+//            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
+//
+//        students.deleteStudent(albumNo);
+//        return Response.ok().status(Response.Status.NO_CONTENT).build(); //204
     }
 
     @GET
@@ -195,4 +224,23 @@ public class StudentService {
 
         return Response.ok(student.toByteArray(), "application/protobuf").build();
     }
+
+
+    @GET
+    @Path("/{albumNo}/group")
+    @ApiOperation(value = "Retrieve student's courses")
+    @ApiResponses({@ApiResponse(code=200, message="Success"), @ApiResponse(code=404, message="Not Found")})
+    public Response getStudentGroup(@ApiParam(value = "albumNo of student whose group is to be retrieved") @PathParam("albumNo") int albumNo) {
+
+        try {
+            Group group = dao.findGroup(albumNo);
+            LOGGER.info("\n\n\ngroup:\n\n\n\n" + group.toString());
+            return Response.ok(group).status(Response.Status.OK).build();    // 200
+        }
+        catch (Exception ex) {
+            LOGGER.info("\n\ngroup error!!\n\n\n");
+            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
+        }
+    }
+
 }

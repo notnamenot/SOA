@@ -16,7 +16,7 @@ public class StudentEntity {
     private String lastName;
 
 
-    @ManyToMany(targetEntity = CourseEntity.class)
+    @ManyToMany(targetEntity = CourseEntity.class)//cascade = CascadeType.AL
     @JoinTable(
             name = "student_course",
             schema = "dbo",
@@ -25,7 +25,7 @@ public class StudentEntity {
                     referencedColumnName = "album_no"
             ),
             inverseJoinColumns = @JoinColumn(
-                    name = "course",
+                    name = " course",
                     referencedColumnName = "name"
             )
     )

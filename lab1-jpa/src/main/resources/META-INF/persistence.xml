@@ -5,11 +5,13 @@
           http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
              version="2.1">
 
-    <persistence-unit name="StudentUnit"  >
+    <persistence-unit name="StudentUnit" > <!-- transaction-type="RESOURCE_LOCAL" -->
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>pl.edu.agh.soa.jpa.StudentEntity</class>
         <class>pl.edu.agh.soa.jpa.CourseEntity</class>
-        <class>pl.edu.agh.soa.jpa.StudentCourses</class>
+        <class>pl.edu.agh.soa.jpa.GroupEntity</class>
+        <class>pl.edu.agh.soa.jpa.StudentCourse</class>
+        <class>pl.edu.agh.soa.jpa.GroupStudent</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/soa"/> <!--5432 ;INIT=CREATE SCHEMA IF NOT EXISTS dao-->
