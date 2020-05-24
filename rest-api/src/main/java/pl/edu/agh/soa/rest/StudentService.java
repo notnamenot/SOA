@@ -1,10 +1,14 @@
 package pl.edu.agh.soa.rest;
 
+import pl.edu.agh.soa.dao.StudentServiceDAO;
+import pl.edu.agh.soa.jpa.StudentsManager;
 import pl.edu.agh.soa.model.Student;
 import pl.edu.agh.soa.model.StudentList;
 import pl.edu.agh.soa.model.StudentOuterClass;
 import pl.edu.agh.soa.rest.jwt.JWTTokenNeeded;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -14,13 +18,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Base64;
+import java.util.logging.Logger;
 //import utils.Base64Utils;
 import org.apache.commons.io.IOUtils;
 import io.swagger.annotations.*;
 
 import static org.jboss.ws.api.Log.LOGGER;
 
-
+@Stateless
 @Api(value = "Student Service")
 @Path("students")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -30,6 +35,12 @@ public class StudentService {
     @Inject
     private StudentList students;
 
+//    @Inject
+//    StudentsManager studentsManager;
+
+    @EJB
+    StudentServiceDAO dao = new StudentServiceDAO();
+
     @GET
     @Path("/")
     @ApiOperation(value = "Retrieve all students")//, response = Student.class, responseContainer = "List")
@@ -38,9 +49,20 @@ public class StudentService {
 //        MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
     public Response getStudents(@ApiParam(value = "course to filter students by", required = false) @QueryParam("course") String course,
                                 @ApiParam(value = "first name to filter students by", required = false) @QueryParam("firstName") String firstName) {
-        List<Student> filteredStudents = students.filter(course, firstName);
-        LOGGER.info("getStudents:\tcourse:\n " + course + ";firstName:" + firstName + ";filteredStudents:" + filteredStudents.toString());
-        return Response.ok(filteredStudents).status(Response.Status.OK).variant(null).build(); //200
+
+        try {
+            List<Student> filteredStudents = dao.findStudents(course, firstName);
+            for (Student s : filteredStudents) { LOGGER.info("found"+s); }
+            return Response.ok(filteredStudents).status(Response.Status.OK).variant(null).build(); //200
+        }
+        catch(Exception ex) {
+            LOGGER.info("\n\nStudents NOT FOUND!\n\n\n");
+            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
+        }
+
+//        List<Student> filteredStudents = students.filter(course, firstName);
+//        LOGGER.info("getStudents:\tcourse:\n " + course + ";firstName:" + firstName + ";filteredStudents:" + filteredStudents.toString());
+//        return Response.ok(filteredStudents).status(Response.Status.OK).variant(null).build(); //200
     }
 
     @GET
@@ -48,12 +70,24 @@ public class StudentService {
     @ApiOperation(value = "Retrieve student by albumNo")
     @ApiResponses({@ApiResponse(code=200, message="Success"), @ApiResponse(code=404, message="Not Found")})
     public Response getStudentByAlbumNo(@ApiParam(value = "albumNo of student to be retrieved", required=true) @PathParam("albumNo") int albumNo) {
-        if (!students.exist(albumNo))
-            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
 
-        Student student = students.getStudent(albumNo);
-        LOGGER.info("getStudentByAlbumNo:\talbumNo\n " + albumNo + ";student:\n" + student);
-        return Response.ok(student).status(Response.Status.OK).build();    // 200
+        try {
+            Student student = dao.findStudent(albumNo);
+            LOGGER.info("\n\n\nstudent:\n\n\n\n" + student);
+            return Response.ok(student).status(Response.Status.OK).build();    // 200
+        }
+        catch (Exception ex) {
+            LOGGER.info("\n\nStudent with albumNo=" + albumNo + "NOT FOUND!\n\n\n");
+            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
+        }
+
+
+//        if (!students.exist(albumNo))
+//            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
+//
+//        Student student = students.getStudent(albumNo);
+//        LOGGER.info("getStudentByAlbumNo:\talbumNo\n " + albumNo + ";student:\n" + student);
+//        return Response.ok(student).status(Response.Status.OK).build();    // 200
     }
 
     @GET
@@ -61,12 +95,24 @@ public class StudentService {
     @ApiOperation(value = "Retrieve student's courses")
     @ApiResponses({@ApiResponse(code=200, message="Success"), @ApiResponse(code=404, message="Not Found")})
     public Response getStudentCourses(@ApiParam(value = "albumNo of student whose courses are to be retrieved") @PathParam("albumNo") int albumNo) {
-        if (!students.exist(albumNo))
-            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
 
-        List<String> studentCourses = students.getStudent(albumNo).getCourses();
-        LOGGER.info("getStudentByAlbumNo:\n " + albumNo + "\n" + studentCourses);
-        return Response.ok(studentCourses).status(Response.Status.OK).build();    // 200
+        try {
+            Student student = dao.findStudent(albumNo);
+            LOGGER.info("\n\n\nstudent:\n\n\n\n" + student);
+            return Response.ok(student.getCourses()).status(Response.Status.OK).build();    // 200
+        }
+        catch (Exception ex) {
+            LOGGER.info("\n\nStudent with albumNo=" + albumNo + "NOT FOUND!\n\n\n");
+            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
+        }
+
+//        if (!students.exist(albumNo))
+//            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
+//
+//        List<String> studentCourses = students.getStudent(albumNo).getCourses();
+//        LOGGER.info("getStudentByAlbumNo:\n " + albumNo + "\n" + studentCourses);
+//
+//        return Response.ok(studentCourses).status(Response.Status.OK).build();    // 200
     }
 
     @GET

@@ -39,7 +39,8 @@ public class Student implements Serializable {
 
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
-    public void setAlbumNr(int albumNo) { this.albumNo = albumNo; }
+    public void setAlbumNr(int albumNo) { this.albumNo = albumNo; } //TODO wywalić
+    public void setAlbumNo(int albumNo) { this.albumNo = albumNo; }
     public void setCourses(List<String> courses) { this.courses = courses; }
 //    public void setAvatar(byte[] avatar) { this.avatar = avatar; }
 

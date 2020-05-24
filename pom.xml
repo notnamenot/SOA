@@ -33,11 +33,15 @@
         </license>
     </licenses>
     <modules>
+        <module>lab1-ear</module>
         <module>soap-api</module>
         <module>rest-api</module>
-        <module>lab1-ear</module>
         <module>soap-connector</module>
+        <module>rest-connector</module>
         <module>lab1-model</module>
+        <module>lab1-jpa</module>
+        <module>lab1-dao</module>
+
     </modules>
 
     <properties>
