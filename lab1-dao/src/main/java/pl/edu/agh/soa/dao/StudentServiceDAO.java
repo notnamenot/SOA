@@ -1,5 +1,6 @@
 package pl.edu.agh.soa.dao;
 
+import pl.edu.agh.soa.jpa.CourseEntity;
 import pl.edu.agh.soa.jpa.GroupEntity;
 import pl.edu.agh.soa.jpa.StudentEntity;
 import pl.edu.agh.soa.model.Group;
@@ -8,6 +9,7 @@ import pl.edu.agh.soa.model.Student;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
@@ -52,9 +54,26 @@ public class StudentServiceDAO {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<StudentEntity> criteriaQuery = cb.createQuery(StudentEntity.class);
         Root<StudentEntity> fromStudents = criteriaQuery.from(StudentEntity.class);
-        criteriaQuery.select(fromStudents);
 
-        TypedQuery<StudentEntity> typedQuery = entityManager.createQuery(criteriaQuery);
+//        ParameterExpression<String> paramCourse = cb.parameter(String.class);
+//        ParameterExpression<String> paramFirstName = cb.parameter(String.class);
+        List<Predicate> conditions = new ArrayList();
+        if (course != null) {
+            Join<StudentEntity, CourseEntity> courses = fromStudents.join("courses");
+            conditions.add(cb.equal(courses.get("name"), course));
+        }
+        if (firstName != null) {
+            conditions.add(cb.equal(fromStudents.get("firstName"), firstName));
+        }
+
+        TypedQuery<StudentEntity> typedQuery = entityManager.createQuery(criteriaQuery
+                .select(fromStudents)
+                .where(conditions.toArray(new Predicate[] {}))
+        );
+
+//        typedQuery.setParameter(paramCourse, course);
+//        typedQuery.setParameter(paramFirstName, firstName);
+
         List<StudentEntity> studentEntityList = typedQuery.getResultList();
 
         return mapper.studentEntityListToStudentList(studentEntityList);
@@ -68,8 +87,21 @@ public class StudentServiceDAO {
 
     @Transactional(rollbackOn = Exception.class)
     public void editStudent(Student student) {
-        StudentEntity studentEntity = mapper.studentToStudentEntity(student);
-        entityManager.merge(studentEntity);
+//        StudentEntity studentEntity = mapper.studentToStudentEntity(student);
+//        entityManager.merge(studentEntity);
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate update = cb.createCriteriaUpdate(StudentEntity.class);
+        Root<StudentEntity> s = update.from(StudentEntity.class);
+
+        update.set("firstName", student.getFirstName());
+        update.set("lastName", student.getLastName());
+        update.set("courses", student.getCourses());
+
+        update.where(cb.equal(s.get("albumNo"),student.getAlbumNo()));
+
+        Query query = entityManager.createQuery(update);
+        query.executeUpdate();
     }
 
     @Transactional(rollbackOn = Exception.class)
