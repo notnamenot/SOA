@@ -4,10 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import pl.edu.agh.soa.model.Group;
-import pl.edu.agh.soa.model.Student;
-import pl.edu.agh.soa.model.StudentOuterClass;
-import pl.edu.agh.soa.model.User;
+import pl.edu.agh.soa.model.*;
 
 import javax.imageio.ImageIO;
 import javax.ws.rs.client.Entity;
@@ -191,6 +188,48 @@ public class Client {
         return "nope";
     }
 
+    public Group getStudentGroup(int albumNo) {
+        printMethodName();
+
+        target = target.path("students").path(Integer.toString(albumNo)).path("group");
+        response = target.request().get();
+
+        printResponseStatusInfo();
+
+        Group group = null;
+        if (response.getStatusInfo() == Response.Status.OK) {
+            group = response.readEntity(new GenericType<Group>() {});
+        }
+        reset();
+        return group;
+    }
+
+    public void addContact(Contact contact, String token) {
+        printMethodName();
+
+        target = target.path("students").path(Integer.toString(contact.getAlbumNo())).path("contact");
+        response = target.request().header("Authorization", token).post(Entity.entity(contact, MediaType.APPLICATION_JSON ));
+        printResponseStatusInfo();
+
+        reset();
+    }
+
+    public Contact getContact(int albumNo) {
+        printMethodName();
+
+        target = target.path("students").path(Integer.toString(albumNo)).path("contact");
+        response = target.request().get();
+
+        printResponseStatusInfo();
+
+        Contact contact = null;
+        if (response.getStatusInfo() == Response.Status.OK) {
+            contact = response.readEntity(new GenericType<Contact>() {});
+        }
+        reset();
+        return contact;
+    }
+
 
     private void printMethodName() {
         System.out.println("\nMethod name: " + new Throwable().getStackTrace()[1].getMethodName());
@@ -210,19 +249,5 @@ public class Client {
     }
 
 
-    public Group getStudentGroup(int albumNo) {
-        printMethodName();
 
-        target = target.path("students").path(Integer.toString(albumNo)).path("group");
-        response = target.request().get();
-
-        printResponseStatusInfo();
-
-        Group group = null;
-        if (response.getStatusInfo() == Response.Status.OK) {
-            group = response.readEntity(new GenericType<Group>() {});
-        }
-        reset();
-        return group;
-    }
 }

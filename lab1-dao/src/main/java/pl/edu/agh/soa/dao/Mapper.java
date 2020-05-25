@@ -78,7 +78,9 @@ public class Mapper {
     }
 
     public ContactEntity contactToContactEntity(Contact contact) {
-        return new ContactEntity(contact.getAlbumNo(),contact.getPhone());
+        ContactEntity contactEntity = new ContactEntity();
+        contactEntity.setPhone(contact.getPhone());
+        return contactEntity;
     }
 
 }

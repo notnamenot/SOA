@@ -1,5 +1,6 @@
 package test;
 
+import pl.edu.agh.soa.model.Contact;
 import pl.edu.agh.soa.model.Student;
 
 public class TestClient {
@@ -37,8 +38,15 @@ public class TestClient {
 //        //client.getAvatar();
 //
 //        System.out.println(client.getProtoBuffStudent());
+//
+//        System.out.println(client.getStudentGroup(666671));
+//        System.out.println(client.getStudentGroup(666670));
 
-        System.out.println(client.getStudentGroup(666671));
-        System.out.println(client.getStudentGroup(666670));
+//        Contact contact = new Contact(666670,608553669);
+//        client.addContact(contact,token);
+
+        client.getContact(666670);
+
+        client.close();
     }
 }

@@ -229,7 +229,7 @@ public class StudentService {
 
     @GET
     @Path("/{albumNo}/group")
-    @ApiOperation(value = "Retrieve student's courses")
+    @ApiOperation(value = "Retrieve student's group")
     @ApiResponses({@ApiResponse(code=200, message="Success"), @ApiResponse(code=404, message="Not Found")})
     public Response getStudentGroup(@ApiParam(value = "albumNo of student whose group is to be retrieved") @PathParam("albumNo") int albumNo) {
 
@@ -259,8 +259,25 @@ public class StudentService {
             return Response.ok().status(Response.Status.CREATED).build(); //.created(uri) // 201
         }
         catch (Exception e) {
-            LOGGER.info("Exception incontact!:\n " + contact.toString());
+            LOGGER.info("Exception inc ontact!:\n " + contact.toString());
             return Response.notModified().status(Response.Status.CONFLICT).build(); // 409 The request could not be completed due to a conflict with the current state of the resource.
+        }
+    }
+
+    @GET
+    @Path("/{albumNo}/contact")
+    @ApiOperation(value = "Retrieve student's contact")
+    @ApiResponses({@ApiResponse(code=200, message="Success"), @ApiResponse(code=404, message="Not Found")})
+    public Response getStudentContact(@ApiParam(value = "albumNo of student whose contact is to be retrieved") @PathParam("albumNo") int albumNo) {
+
+        try {
+            Contact contact = dao.findContact(albumNo);
+            LOGGER.info("\n\n\ngroup:\n\n\n\n" + contact.toString());
+            return Response.ok(contact).status(Response.Status.OK).build();    // 200
+        }
+        catch (Exception ex) {
+            LOGGER.info("\n\ncontact error!!\n\n\n");
+            return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
         }
     }
 

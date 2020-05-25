@@ -137,19 +137,26 @@ public class StudentServiceDAO {
         LOGGER.info("\n\n3\n\n" + albumNo);
 
         typedQuery.setParameter(paramAlbumNo, albumNo);
-        LOGGER.info("\n\n4\n\n" + albumNo);
 
 //        List<GroupEntity> groupEntityList = typedQuery.getResultList();
         GroupEntity groupEntity = typedQuery.getSingleResult();
 
-        LOGGER.info("\n\n4\n\n" + albumNo);
 
-//        return studentMapper.entityToGroup(groupEntityList.get(0));
         return mapper.groupEntityToGroup(groupEntity);
     }
 
     public void addContact(Contact contact) {
         ContactEntity contactEntity = mapper.contactToContactEntity(contact);
+
+        StudentEntity studentEntity = entityManager.find(StudentEntity.class,contact.getAlbumNo());
+        contactEntity.setStudentEntity(studentEntity);
         entityManager.persist(contactEntity);
+    }
+
+    public Contact findContact(int albumNo) {
+        LOGGER.info("\n\nfindContact:\n\n" + albumNo);
+
+        ContactEntity contactEntity = entityManager.find(ContactEntity.class, albumNo);
+        return mapper.contactEntityToContact(contactEntity);
     }
 }
