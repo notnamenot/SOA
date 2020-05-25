@@ -11,11 +11,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -45,7 +43,7 @@ public class StudentServiceDAO {
 
 //        StudentMapper studentMapper = new StudentMapper();
 
-        List<Student> studentList = studentEntityList // TODO filtrowanie w sqlu
+        List<Student> studentList = studentEntityList
                                         .stream()
                                         .map(studentMapper::entityToStudentMapper) //s -> studentMapper.entityToStudentMapper(s)
                                         .filter(s -> course == null || s.getCourses().contains(course))
@@ -74,32 +72,28 @@ public class StudentServiceDAO {
     }
 
     public Group findGroup(int albumNo) {
-//        GroupEntity groupEntity = entityManager.find(GroupEntity.class, albumNo);
-//
-//        Query query = entityManager.createQuery("SELECT group_id FROM group_student WHERE album_no = " + albumNo);
-//
-//        String studentEntityList = query.getFirstResult();
-//        return studentMapper.entityToStudentMapper(studentEntity);
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<GroupStudent> q = cb.createQuery(GroupStudent.class);
-        Root<GroupStudent> gs = q.from(GroupStudent.class);
-        ParameterExpression<Integer> p = cb.parameter(Integer.class);
-        q.select(gs).where(cb.equal(gs.get("albumNo"),p));
+        CriteriaQuery<GroupEntity> query = cb.createQuery(GroupEntity.class);
+        Root<GroupEntity> fromGroups = query.from(GroupEntity.class);
+        Join<GroupEntity,StudentEntity> students = fromGroups.join("studentEntityList"); //s.join(GroupEntity_.studentEntityList);
 
-        LOGGER.info("\n\nbefore create query\n\n");
-        TypedQuery<GroupStudent> query = entityManager.createQuery(q);
-        LOGGER.info("\n\nafter create query\n\n");
-        query.setParameter(p, albumNo);
-        List<GroupStudent> results = query.getResultList();
-        LOGGER.info("\n\nbefore group finding, groupSize:\n\n" + results.size());
+        ParameterExpression<Integer> paramAlbumNo = cb.parameter(Integer.class);
+        List<Predicate> conditions = new ArrayList();
+        conditions.add(cb.equal(students.get("albumNo"), paramAlbumNo));
 
-        String groupId = results.get(0).getGroupId();
-        LOGGER.info("\n\nbefore group finding, groupId:\n\n" + groupId);
+        TypedQuery<GroupEntity> typedQuery = entityManager.createQuery(query
+                .select(fromGroups)
+                .where(conditions.toArray(new Predicate[] {}))
+        );
 
-        GroupEntity groupEntity = entityManager.find(GroupEntity.class, groupId);
-        LOGGER.info("\n\nafter group finding\n\n");
+        typedQuery.setParameter(paramAlbumNo, albumNo);
 
+//        List<GroupEntity> groupEntityList = typedQuery.getResultList();
+        GroupEntity groupEntity = typedQuery.getSingleResult();
+
+
+//        return studentMapper.entityToGroup(groupEntityList.get(0));
         return studentMapper.entityToGroup(groupEntity);
     }
 

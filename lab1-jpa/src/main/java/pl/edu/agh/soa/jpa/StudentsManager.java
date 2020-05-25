@@ -77,16 +77,29 @@ public class StudentsManager {
 
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<GroupEntity> query = cb.createQuery(GroupEntity.class);
-            Root<GroupEntity> groups = query.from(GroupEntity.class);
-//            groups.join(GroupEntity_.studentEntityList); //.join("studentEntityList");
-            Join<GroupEntity,StudentEntity> students = groups.join(GroupEntity_.studentEntityList);
+            Root<GroupEntity> fromGroups = query.from(GroupEntity.class);
+////            groups.join(GroupEntity_.studentEntityList); //.join("studentEntityList");
+            Join<GroupEntity,StudentEntity> students = fromGroups.join("studentEntityList");
+//            Join<GroupEntity,StudentEntity> students = groups.join(GroupEntity_.studentEntityList);
             ParameterExpression<Integer> p = cb.parameter(Integer.class);
-            query.select(groups).where(cb.equal(groups.get("albumNo"),p));
+//            query.select(groups).where(cb.equal(groups.get("albumNo"),p));
 
-            TypedQuery<GroupEntity> q = entityManager.createQuery(query);
-            q.setParameter(p, 666671);
-            List<GroupEntity> results = q.getResultList();
-            System.out.println("res size:" + results.size());
+            List<Predicate> conditions = new ArrayList();
+            conditions.add(cb.equal(students.get("albumNo"), p));
+
+            TypedQuery<GroupEntity> typedQuery = entityManager.createQuery(query
+                    .select(fromGroups)
+                    .where(conditions.toArray(new Predicate[] {}))
+            );
+
+            typedQuery.setParameter(p, 666671);
+
+            List<GroupEntity> results = typedQuery.getResultList();
+
+//            TypedQuery<GroupEntity> q = entityManager.createQuery(query);
+//            q.setParameter(p, 666671);
+//            List<GroupEntity> results = q.getResultList();
+//            System.out.println("res size:" + results.size());
             for (GroupEntity groupEntity : results) { System.out.println(groupEntity.getId()); }
 
             //
