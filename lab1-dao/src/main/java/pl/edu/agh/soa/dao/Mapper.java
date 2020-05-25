@@ -1,8 +1,10 @@
 package pl.edu.agh.soa.dao;
 
+import pl.edu.agh.soa.jpa.ContactEntity;
 import pl.edu.agh.soa.jpa.CourseEntity;
 import pl.edu.agh.soa.jpa.GroupEntity;
 import pl.edu.agh.soa.jpa.StudentEntity;
+import pl.edu.agh.soa.model.Contact;
 import pl.edu.agh.soa.model.Group;
 import pl.edu.agh.soa.model.Student;
 
@@ -55,12 +57,28 @@ public class Mapper {
         return courseEntity.getName();
     }
 
-    public Group entityToGroup(GroupEntity groupEntity) {
+    public Group groupEntityToGroup(GroupEntity groupEntity) {
         Group group = new Group(groupEntity.getId(),groupEntity.getCapacity(),groupEntity.getStudentsCount());
         List<Student> studentList = groupEntity.getStudentEntityList().stream().map(this::studentEntityToStudent).collect(toList());
         group.setStudentList(studentList);
 
         return group;
+    }
+
+    public GroupEntity groupToGroupEntity(Group group) {
+        GroupEntity groupEntity = new GroupEntity(group.getId(),group.getCapacity());
+        List<StudentEntity> studentEntityList = group.getStudentList().stream().map(this::studentToStudentEntity).collect(toList());
+        groupEntity.setStudentEntityList(studentEntityList);
+
+        return  groupEntity;
+    }
+
+    public Contact contactEntityToContact(ContactEntity contactEntity) {
+        return new Contact(contactEntity.getAlbumNo(),contactEntity.getPhone());
+    }
+
+    public ContactEntity contactToContactEntity(Contact contact) {
+        return new ContactEntity(contact.getAlbumNo(),contact.getPhone());
     }
 
 }

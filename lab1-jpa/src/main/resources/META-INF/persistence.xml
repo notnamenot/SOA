@@ -12,6 +12,7 @@
         <class>pl.edu.agh.soa.jpa.GroupEntity</class>
         <class>pl.edu.agh.soa.jpa.StudentCourse</class>
         <class>pl.edu.agh.soa.jpa.GroupStudent</class>
+        <class>pl.edu.agh.soa.jpa.ContactEntity</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/soa"/> <!--5432 ;INIT=CREATE SCHEMA IF NOT EXISTS dao-->

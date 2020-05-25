@@ -2,6 +2,7 @@ package pl.edu.agh.soa.rest;
 
 import pl.edu.agh.soa.dao.StudentServiceDAO;
 import pl.edu.agh.soa.jpa.StudentsManager;
+import pl.edu.agh.soa.model.Contact;
 import pl.edu.agh.soa.model.Group;
 import pl.edu.agh.soa.model.Student;
 import pl.edu.agh.soa.model.StudentList;
@@ -242,5 +243,26 @@ public class StudentService {
             return Response.notModified().status(Response.Status.NOT_FOUND).build(); //404
         }
     }
+
+
+    @POST
+    @Path("/{albumNo}/contact")
+    @JWTTokenNeeded
+    @ApiOperation(value = "Add contact to studwwnt", authorizations = { @Authorization(value = "jwt")}, notes = "jwt auth needed" )
+    @ApiResponses({@ApiResponse(code=201, message="Created"), @ApiResponse(code=409, message="Conflict")})
+    public Response addContactToStudent(@ApiParam(value = "contact to be added", required = true) Contact contact) {
+        LOGGER.info("addContactToStudent:\n " + contact.toString());
+
+        try {
+            dao.addContact(contact);
+            LOGGER.info("\n\n\nstudent:\n\n\n\n" + contact.toString());
+            return Response.ok().status(Response.Status.CREATED).build(); //.created(uri) // 201
+        }
+        catch (Exception e) {
+            LOGGER.info("Exception incontact!:\n " + contact.toString());
+            return Response.notModified().status(Response.Status.CONFLICT).build(); // 409 The request could not be completed due to a conflict with the current state of the resource.
+        }
+    }
+
 
 }

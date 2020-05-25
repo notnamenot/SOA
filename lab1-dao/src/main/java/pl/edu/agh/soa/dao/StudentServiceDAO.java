@@ -1,20 +1,24 @@
 package pl.edu.agh.soa.dao;
 
+import pl.edu.agh.soa.jpa.ContactEntity;
 import pl.edu.agh.soa.jpa.CourseEntity;
 import pl.edu.agh.soa.jpa.GroupEntity;
 import pl.edu.agh.soa.jpa.StudentEntity;
+import pl.edu.agh.soa.model.Contact;
 import pl.edu.agh.soa.model.Group;
 import pl.edu.agh.soa.model.Student;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
+import static org.jboss.ws.api.Log.LOGGER;
 
 @Stateless
 public class StudentServiceDAO {
@@ -87,21 +91,23 @@ public class StudentServiceDAO {
 
     @Transactional(rollbackOn = Exception.class)
     public void editStudent(Student student) {
+        StudentEntity studentEntity = mapper.studentToStudentEntity(student);
+        entityManager.merge(studentEntity);
+
 //        StudentEntity studentEntity = mapper.studentToStudentEntity(student);
-//        entityManager.merge(studentEntity);
-
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaUpdate update = cb.createCriteriaUpdate(StudentEntity.class);
-        Root<StudentEntity> s = update.from(StudentEntity.class);
-
-        update.set("firstName", student.getFirstName());
-        update.set("lastName", student.getLastName());
-        update.set("courses", student.getCourses());
-
-        update.where(cb.equal(s.get("albumNo"),student.getAlbumNo()));
-
-        Query query = entityManager.createQuery(update);
-        query.executeUpdate();
+//
+//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+//        CriteriaUpdate update = cb.createCriteriaUpdate(StudentEntity.class);
+//        Root<StudentEntity> s = update.from(StudentEntity.class);
+//
+//        update.set("firstName", studentEntity.getFirstName());
+//        update.set("lastName", studentEntity.getLastName());
+//        update.set("courses", studentEntity.getCourses());
+//
+//        update.where(cb.equal(s.get("albumNo"),student.getAlbumNo()));
+//
+//        Query query = entityManager.createQuery(update);
+//        query.executeUpdate();
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -112,28 +118,38 @@ public class StudentServiceDAO {
 
     public Group findGroup(int albumNo) {
 
+        LOGGER.info("\n\n\ngroup, alnumNo:\n\n\n\n" + albumNo);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<GroupEntity> query = cb.createQuery(GroupEntity.class);
         Root<GroupEntity> fromGroups = query.from(GroupEntity.class);
         Join<GroupEntity,StudentEntity> students = fromGroups.join("studentEntityList"); //s.join(GroupEntity_.studentEntityList);
 
+        LOGGER.info("\n\n1\n\n" + albumNo);
         ParameterExpression<Integer> paramAlbumNo = cb.parameter(Integer.class);
         List<Predicate> conditions = new ArrayList();
         conditions.add(cb.equal(students.get("albumNo"), paramAlbumNo));
+        LOGGER.info("\n\n2\n\n" + albumNo);
 
         TypedQuery<GroupEntity> typedQuery = entityManager.createQuery(query
                 .select(fromGroups)
                 .where(conditions.toArray(new Predicate[] {}))
         );
+        LOGGER.info("\n\n3\n\n" + albumNo);
 
         typedQuery.setParameter(paramAlbumNo, albumNo);
+        LOGGER.info("\n\n4\n\n" + albumNo);
 
 //        List<GroupEntity> groupEntityList = typedQuery.getResultList();
         GroupEntity groupEntity = typedQuery.getSingleResult();
 
+        LOGGER.info("\n\n4\n\n" + albumNo);
 
 //        return studentMapper.entityToGroup(groupEntityList.get(0));
-        return mapper.entityToGroup(groupEntity);
+        return mapper.groupEntityToGroup(groupEntity);
     }
 
+    public void addContact(Contact contact) {
+        ContactEntity contactEntity = mapper.contactToContactEntity(contact);
+        entityManager.persist(contactEntity);
+    }
 }

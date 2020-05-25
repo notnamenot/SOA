@@ -40,6 +40,7 @@ public class GroupEntity {
         this.id = id;
         this.capacity = capacity;
         this.studentEntityList = studentEntityList;
+
     }
 
     public GroupEntity() { }

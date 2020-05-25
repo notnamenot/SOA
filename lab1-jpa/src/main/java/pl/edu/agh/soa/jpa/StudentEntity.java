@@ -25,11 +25,15 @@ public class StudentEntity {
                     referencedColumnName = "album_no"
             ),
             inverseJoinColumns = @JoinColumn(
-                    name = " course",
+                    name = "course",
                     referencedColumnName = "name"
             )
     )
     private List<CourseEntity> courses;
+
+    @OneToOne(mappedBy = "studentEntity", cascade = CascadeType.ALL)
+    private ContactEntity contactEntity;
+
 
     public StudentEntity() {
         super();
