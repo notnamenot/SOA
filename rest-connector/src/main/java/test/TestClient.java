@@ -7,7 +7,7 @@ public class TestClient {
 
         Client client = new Client();
 
-//        System.out.println(client.getStudents()); // 200
+        System.out.println(client.getStudents()); // 200
 //        System.out.println(client.getStudents("SOA")); // 200
 //        System.out.println(client.getStudent(666670)); // 200
 //        System.out.println(client.getStudent(30)); // doesn't exist - 404
@@ -38,6 +38,6 @@ public class TestClient {
 //
 //        System.out.println(client.getProtoBuffStudent());
 
-        System.out.println(client.getStudentGroup(666671));
+//        System.out.println(client.getStudentGroup(666671));
     }
 }

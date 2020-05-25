@@ -1,7 +1,6 @@
 package pl.edu.agh.soa.dao;
 
 import pl.edu.agh.soa.jpa.GroupEntity;
-import pl.edu.agh.soa.jpa.GroupStudent;
 import pl.edu.agh.soa.jpa.StudentEntity;
 import pl.edu.agh.soa.model.Group;
 import pl.edu.agh.soa.model.Student;
@@ -9,16 +8,11 @@ import pl.edu.agh.soa.model.Student;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-
-import static org.jboss.ws.api.Log.LOGGER;
 
 @Stateless
 public class StudentServiceDAO {
@@ -26,42 +20,55 @@ public class StudentServiceDAO {
     @PersistenceContext(unitName = "StudentUnit")
     EntityManager entityManager;
 
-    private static Mapper studentMapper = new Mapper();
+    private static final Mapper mapper = new Mapper();
 
     public Student findStudent(int albumNo) {
-        StudentEntity studentEntity = entityManager.find(StudentEntity.class, albumNo);
+//        StudentEntity studentEntity = entityManager.find(StudentEntity.class, albumNo);
 
-//        StudentMapper studentMapper = new StudentMapper();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<StudentEntity> criteriaQuery = cb.createQuery(StudentEntity.class);
+        Root<StudentEntity> fromStudents = criteriaQuery.from(StudentEntity.class);
+        criteriaQuery.select(fromStudents).where(cb.equal(fromStudents.get("albumNo"),albumNo));
 
-        return studentMapper.entityToStudentMapper(studentEntity);
+        StudentEntity studentEntity = entityManager.createQuery(criteriaQuery).getSingleResult();
+
+        return mapper.studentEntityToStudent(studentEntity);
     }
 
     public List<Student> findStudents(String course, String firstName) {
-        Query query = entityManager.createQuery("SELECT e FROM StudentEntity e");
+//        Query query = entityManager.createQuery("SELECT e FROM StudentEntity e");
+//
+//        List<StudentEntity> studentEntityList = query.getResultList();
+//
+////        StudentMapper studentMapper = new StudentMapper();
+//
+//        List<Student> studentList = studentEntityList
+//                                        .stream()
+//                                        .map(studentMapper::entityToStudentMapper) //s -> studentMapper.entityToStudentMapper(s)
+//                                        .filter(s -> course == null || s.getCourses().contains(course))
+//                                        .filter(s -> firstName == null || s.getFirstName().equals(firstName))
+//                                        .collect(toList());
 
-        List<StudentEntity> studentEntityList = query.getResultList();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<StudentEntity> criteriaQuery = cb.createQuery(StudentEntity.class);
+        Root<StudentEntity> fromStudents = criteriaQuery.from(StudentEntity.class);
+        criteriaQuery.select(fromStudents);
 
-//        StudentMapper studentMapper = new StudentMapper();
+        TypedQuery<StudentEntity> typedQuery = entityManager.createQuery(criteriaQuery);
+        List<StudentEntity> studentEntityList = typedQuery.getResultList();
 
-        List<Student> studentList = studentEntityList
-                                        .stream()
-                                        .map(studentMapper::entityToStudentMapper) //s -> studentMapper.entityToStudentMapper(s)
-                                        .filter(s -> course == null || s.getCourses().contains(course))
-                                        .filter(s -> firstName == null || s.getFirstName().equals(firstName))
-                                        .collect(toList());
-
-        return studentList;
+        return mapper.studentEntityListToStudentList(studentEntityList);
     }
 
     @Transactional(rollbackOn = Exception.class)
     public void addStudent(Student student) {
-        StudentEntity studentEntity = studentMapper.studentToEntityMapper(student);
+        StudentEntity studentEntity = mapper.studentToStudentEntity(student);
         entityManager.persist(studentEntity);
     }
 
     @Transactional(rollbackOn = Exception.class)
     public void editStudent(Student student) {
-        StudentEntity studentEntity = studentMapper.studentToEntityMapper(student);
+        StudentEntity studentEntity = mapper.studentToStudentEntity(student);
         entityManager.merge(studentEntity);
     }
 
@@ -94,7 +101,7 @@ public class StudentServiceDAO {
 
 
 //        return studentMapper.entityToGroup(groupEntityList.get(0));
-        return studentMapper.entityToGroup(groupEntity);
+        return mapper.entityToGroup(groupEntity);
     }
 
 }

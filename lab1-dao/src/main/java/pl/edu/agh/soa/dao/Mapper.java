@@ -16,7 +16,7 @@ import static org.jboss.ws.api.Log.LOGGER;
 @Stateless
 public class Mapper {
 
-    public StudentEntity studentToEntityMapper(Student student) {
+    public StudentEntity studentToStudentEntity(Student student) {
         StudentEntity studentEntity = new StudentEntity();
         studentEntity.setAlbumNo(student.getAlbumNo());
         studentEntity.setFirstName(student.getFirstName());
@@ -31,7 +31,7 @@ public class Mapper {
         return studentEntity;
     }
 
-    public Student entityToStudentMapper(StudentEntity studentEntity) {
+    public Student studentEntityToStudent(StudentEntity studentEntity) {
         Student student = new Student();
         student.setAlbumNo(studentEntity.getAlbumNo());
         student.setFirstName(studentEntity.getFirstName());
@@ -41,6 +41,10 @@ public class Mapper {
         student.setCourses(courseList);
 
         return student;
+    }
+
+    public List<Student> studentEntityListToStudentList(List<StudentEntity> studentEntityList) {
+        return studentEntityList.stream().map(this::studentEntityToStudent).collect(toList());
     }
 
     public CourseEntity toCourseEntity(String course) {
@@ -53,7 +57,7 @@ public class Mapper {
 
     public Group entityToGroup(GroupEntity groupEntity) {
         Group group = new Group(groupEntity.getId(),groupEntity.getCapacity(),groupEntity.getStudentsCount());
-        List<Student> studentList = groupEntity.getStudentEntityList().stream().map(this::entityToStudentMapper).collect(toList());
+        List<Student> studentList = groupEntity.getStudentEntityList().stream().map(this::studentEntityToStudent).collect(toList());
         group.setStudentList(studentList);
 
         return group;
