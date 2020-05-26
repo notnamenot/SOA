@@ -118,23 +118,19 @@ public class StudentServiceDAO {
 
     public Group findGroup(int albumNo) {
 
-        LOGGER.info("\n\n\ngroup, alnumNo:\n\n\n\n" + albumNo);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<GroupEntity> query = cb.createQuery(GroupEntity.class);
         Root<GroupEntity> fromGroups = query.from(GroupEntity.class);
         Join<GroupEntity,StudentEntity> students = fromGroups.join("studentEntityList"); //s.join(GroupEntity_.studentEntityList);
 
-        LOGGER.info("\n\n1\n\n" + albumNo);
         ParameterExpression<Integer> paramAlbumNo = cb.parameter(Integer.class);
         List<Predicate> conditions = new ArrayList();
         conditions.add(cb.equal(students.get("albumNo"), paramAlbumNo));
-        LOGGER.info("\n\n2\n\n" + albumNo);
 
         TypedQuery<GroupEntity> typedQuery = entityManager.createQuery(query
                 .select(fromGroups)
                 .where(conditions.toArray(new Predicate[] {}))
         );
-        LOGGER.info("\n\n3\n\n" + albumNo);
 
         typedQuery.setParameter(paramAlbumNo, albumNo);
 
@@ -154,7 +150,6 @@ public class StudentServiceDAO {
     }
 
     public Contact findContact(int albumNo) {
-        LOGGER.info("\n\nfindContact:\n\n" + albumNo);
 
         ContactEntity contactEntity = entityManager.find(ContactEntity.class, albumNo);
         return mapper.contactEntityToContact(contactEntity);
